@@ -2,7 +2,7 @@ package OOP.Bai1.QLPhone.task2;
 
 import java.util.Scanner;
 
-public class DienThoaiCu extends DienThoai {
+public class DienThoaiCu extends DienThoai implements KhuyenMai {
     private int phanTramPin;
     private String moTaThem;
 
@@ -49,5 +49,15 @@ public class DienThoaiCu extends DienThoai {
         System.out.println("Phần trăm Pin: " + phanTramPin + "%");
         System.out.println("Mô tả thêm: " + moTaThem);
         System.out.println("--------------------------------------");
+    }
+    @Override
+    public double tinhTongGia() {
+        return giaBan;
+    }
+
+    // ====== Giảm giá theo phần trăm ======
+    @Override
+    public void khuyenMai(double phanTram) {
+        giaBan = giaBan * (1 - phanTram / 100);
     }
 }

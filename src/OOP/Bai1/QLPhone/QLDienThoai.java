@@ -1,7 +1,6 @@
 package OOP.Bai1.QLPhone;
 
-import OOP.Bai1.QLPhone.task2.DienThoaiCu;
-import OOP.Bai1.QLPhone.task2.DienThoaiMoi;
+import OOP.Bai1.QLPhone.task2.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -25,7 +24,7 @@ public class QLDienThoai {
     static void menuChinh() {
         int choice;
         do {
-            System.out.println("\n-- CHƯƠNG TRÌNH QUẢN LÝ ĐIỆN THOẠI --");
+            System.out.println("\n-- QUẢN LÝ ĐIỆN THOẠI --");
             System.out.println("1. Xem danh sách điện thoại");
             System.out.println("2. Thêm mới");
             System.out.println("3. Cập nhật");
@@ -39,191 +38,173 @@ public class QLDienThoai {
             choice = getChoice(1, 9, "Chọn chức năng: ");
 
             switch (choice) {
-                case 1 -> menuXemDanhSach();
-                case 2 -> menuThemMoi();
-                case 5 -> menuSapXep();
-                case 6 -> menuTimKiem();
-                case 9 -> System.out.println("Chương trình kết thúc.");
-                default -> System.out.println("(Chức năng này chưa làm)");
+                case 1 -> xemDanhSach();
+                case 2 -> themMoi();
+                case 3 -> capNhat();
+                case 4 -> xoa();
+                case 5 -> sapXepTheoGia();
+                case 6 -> timKiem();
+                case 7 -> tinhTongTien();
+                case 8 -> giamGiaDienThoaiCu();
+                case 9 -> System.out.println("Kết thúc chương trình.");
             }
         } while (choice != 9);
     }
 
-    private static void capNhat() {
-        System.out.print("Nhập vào mã muốn cập nhật: ");
-        String id = sc.nextLine();
+    // ======= Menu chức năng =======
+    static void xemDanhSach() {
+        System.out.println("\n-- DANH SÁCH ĐIỆN THOẠI --");
+        for (DienThoaiCu dtc : oldPhones) dtc.output();
+        for (DienThoaiMoi dtm : newPhones) dtm.output();
+    }
 
-        boolean isExistPhone = false;
-
-        if (id.startsWith("DTC")) { // Điện thoại cũ
-            for (DienThoaiCu oldPhone : oldPhones) {
-                if (oldPhone.getId().equals(id)) {
-                    isExistPhone = true;
-                    System.out.printf("Bạn có muốn cập nhật điện thoại cũ có mã %s không?\n", id);
-                    System.out.println("Chọn Yes để xác nhận, No để hủy");
-                    if ("yes".equalsIgnoreCase(sc.nextLine())) {
-                        oldPhone.input(); // nhập lại dữ liệu
-                        System.out.println("Cập nhật thành công!");
-                    } else {
-                        System.out.println("Đã hủy cập nhật!");
-                    }
-                    break;
-                }
-            }
-        } else if (id.startsWith("DTM")) { // Điện thoại mới
-            for (DienThoaiMoi newPhone : newPhones) {
-                if (newPhone.getId().equals(id)) {
-                    isExistPhone = true;
-                    System.out.printf("Bạn có muốn cập nhật điện thoại mới có mã %s không?\n", id);
-                    System.out.println("Chọn Yes để xác nhận, No để hủy");
-                    if ("yes".equalsIgnoreCase(sc.nextLine())) {
-                        newPhone.input(); // nhập lại dữ liệu
-                        System.out.println("Cập nhật thành công!");
-                    } else {
-                        System.out.println("Đã hủy cập nhật!");
-                    }
-                    break;
-                }
-            }
+    static void themMoi() {
+        System.out.println("1. Thêm điện thoại cũ");
+        System.out.println("2. Thêm điện thoại mới");
+        int chon = getChoice(1, 2, "Chọn: ");
+        if (chon == 1) {
+            DienThoaiCu dt = new DienThoaiCu();
+            dt.input();
+            oldPhones.add(dt);
         } else {
-            System.out.println("Mã không hợp lệ! (Phải bắt đầu bằng DTC hoặc DTM)");
-            return;
+            DienThoaiMoi dt = new DienThoaiMoi();
+            dt.input();
+            newPhones.add(dt);
         }
-
-        if (!isExistPhone) {
-            System.out.println("Không tìm thấy mã muốn cập nhật!");
-        }
+        System.out.println("Đã thêm thành công!");
     }
 
-    private static void delete() {
-        System.out.print("Nhập vào mã muốn xóa: ");
+    static void capNhat() {
+        System.out.print("Nhập ID muốn cập nhật: ");
         String id = sc.nextLine();
-
-        boolean isExistPhone = false;
-
-        if (id.startsWith("DTC")) { // Điện thoại cũ
-            for (DienThoaiCu oldPhone : oldPhones) {
-                if (oldPhone.getId().equals(id)) {
-                    isExistPhone = true;
-                    System.out.printf("Bạn có muốn xóa điện thoại cũ có mã %s không?\n", id);
-                    System.out.println("Chọn Yes để xác nhận, No để hủy");
-                    if ("yes".equalsIgnoreCase(sc.nextLine())) {
-                        oldPhones.remove(oldPhone);
-                        System.out.println("Xóa thành công!");
-                    } else {
-                        System.out.println("Đã hủy việc xóa!");
-                    }
+        boolean found = false;
+        if (id.startsWith("DTC")) {
+            for (DienThoaiCu dt : oldPhones) {
+                if (dt.getId().equals(id)) {
+                    dt.input();
+                    found = true;
                     break;
                 }
             }
-        } else if (id.startsWith("DTM")) { // Điện thoại mới
-            for (DienThoaiMoi newPhone : newPhones) {
-                if (newPhone.getId().equals(id)) {
-                    isExistPhone = true;
-                    System.out.printf("Bạn có muốn xóa điện thoại mới có mã %s không?\n", id);
-                    System.out.println("Chọn Yes để xác nhận, No để hủy");
-                    if ("yes".equalsIgnoreCase(sc.nextLine())) {
-                        newPhones.remove(newPhone);
-                        System.out.println("Xóa thành công!");
-                    } else {
-                        System.out.println("Đã hủy việc xóa!");
-                    }
+        } else if (id.startsWith("DTM")) {
+            for (DienThoaiMoi dt : newPhones) {
+                if (dt.getId().equals(id)) {
+                    dt.input();
+                    found = true;
                     break;
                 }
             }
-        } else {
-            System.out.println("Mã không hợp lệ! (Phải bắt đầu bằng DTC hoặc DTM)");
-            return;
         }
-
-        if (!isExistPhone) {
-            System.out.println("Không tìm thấy mã muốn xóa!");
-        }
+        if (!found) System.out.println("Không tìm thấy ID!");
+        else System.out.println("Cập nhật thành công!");
     }
 
-    static void menuXemDanhSach() {
-        int choice;
-        do {
-            System.out.println("\n-- XEM DANH SÁCH --");
-            System.out.println("1. Xem tất cả");
-            System.out.println("2. Xem điện thoại cũ");
-            System.out.println("3. Xem điện thoại mới");
-            System.out.println("4. Trở về menu chính");
-
-            choice = getChoice(1, 4, "Chọn: ");
-        } while (choice != 4);
-    }
-
-    static void menuThemMoi() {
-        int choice;
-        do {
-            System.out.println("\n-- THÊM MỚI --");
-            System.out.println("1. Thêm mới điện thoại cũ");
-            System.out.println("2. Thêm mới điện thoại mới");
-            System.out.println("3. Trở về menu chính");
-
-            choice = getChoice(1, 3, "Chọn: ");
-        } while (choice != 3);
-    }
-
-    static void menuSapXep() {
-        int choice;
-        do {
-            System.out.println("\n-- SẮP XẾP THEO GIÁ --");
-            System.out.println("1. Tăng dần");
-            System.out.println("2. Giảm dần");
-            System.out.println("3. Trở về menu chính");
-
-            choice = getChoice(1, 3, "Chọn: ");
-        } while (choice != 3);
-    }
-
-    static void menuTimKiem() {
-        int choice;
-        do {
-            System.out.println("\n-- TÌM KIẾM --");
-            System.out.println("1. Tìm tất cả điện thoại");
-            System.out.println("2. Tìm điện thoại cũ");
-            System.out.println("3. Tìm điện thoại mới");
-            System.out.println("4. Trở về menu chính");
-
-            choice = getChoice(1, 4, "Chọn: ");
-
-            if (choice >= 1 && choice <= 3) {
-                menuTimKiemChiTiet();
+    static void xoa() {
+        System.out.print("Nhập ID muốn xóa: ");
+        String id = sc.nextLine();
+        boolean found = false;
+        if (id.startsWith("DTC")) {
+            for (int i = 0; i < oldPhones.size(); i++) {
+                if (oldPhones.get(i).getId().equals(id)) {
+                    oldPhones.remove(i);
+                    found = true;
+                    break;
+                }
             }
-        } while (choice != 4);
+        } else if (id.startsWith("DTM")) {
+            for (int i = 0; i < newPhones.size(); i++) {
+                if (newPhones.get(i).getId().equals(id)) {
+                    newPhones.remove(i);
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found) System.out.println("Không tìm thấy ID!");
+        else System.out.println("Xóa thành công!");
     }
 
-    static void menuTimKiemChiTiet() {
-        int choice;
-        do {
-            System.out.println("\n-- TÌM KIẾM CHI TIẾT --");
-            System.out.println("1. Theo giá");
-            System.out.println("2. Theo tên");
-            System.out.println("3. Theo hãng");
-            System.out.println("4. Trở về menu Tìm kiếm");
+    static void sapXepTheoGia() {
+        ArrayList<DienThoai> all = new ArrayList<>();
+        all.addAll(oldPhones);
+        all.addAll(newPhones);
 
-            choice = getChoice(1, 4, "Chọn: ");
-        } while (choice != 4);
+        // Interchange sort tăng dần
+        for (int i = 0; i < all.size() - 1; i++) {
+            for (int j = i + 1; j < all.size(); j++) {
+                if (all.get(i).tinhTongGia() > all.get(j).tinhTongGia()) {
+                    DienThoai tmp = all.get(i);
+                    all.set(i, all.get(j));
+                    all.set(j, tmp);
+                }
+            }
+        }
+
+        System.out.println("-- Danh sách sắp xếp theo giá tăng dần --");
+        for (DienThoai dt : all) dt.output();
     }
 
+    static void timKiem() {
+        System.out.println("1. Tìm tất cả");
+        System.out.println("2. Tìm điện thoại cũ");
+        System.out.println("3. Tìm điện thoại mới");
+        int chon = getChoice(1, 3, "Chọn: ");
 
-    static int getChoice(int min, int max, String message) {
+        ArrayList<DienThoai> list = new ArrayList<>();
+        if (chon == 1) {
+            list.addAll(oldPhones);
+            list.addAll(newPhones);
+        } else if (chon == 2) list.addAll(oldPhones);
+        else list.addAll(newPhones);
+
+        System.out.println("1. Theo tên");
+        System.out.println("2. Theo hãng");
+        System.out.println("3. Theo khoảng giá");
+        int chonLoai = getChoice(1, 3, "Chọn kiểu tìm kiếm: ");
+
+        switch (chonLoai) {
+            case 1 -> {
+                System.out.print("Nhập tên cần tìm: ");
+                String key = sc.nextLine().toLowerCase();
+                for (DienThoai dt : list) if (dt.getTenDienThoai().toLowerCase().contains(key)) dt.output();
+            }
+            case 2 -> {
+                System.out.print("Nhập hãng cần tìm: ");
+                String key = sc.nextLine().toLowerCase();
+                for (DienThoai dt : list) if (dt.getHangSanXuat().toLowerCase().contains(key)) dt.output();
+            }
+            case 3 -> {
+                System.out.print("Nhập giá min: "); double min = Double.parseDouble(sc.nextLine());
+                System.out.print("Nhập giá max: "); double max = Double.parseDouble(sc.nextLine());
+                for (DienThoai dt : list) if (dt.tinhTongGia() >= min && dt.tinhTongGia() <= max) dt.output();
+            }
+        }
+    }
+
+    static void tinhTongTien() {
+        double tong = 0;
+        for (DienThoai dt : oldPhones) tong += dt.tinhTongGia();
+        for (DienThoai dt : newPhones) tong += dt.tinhTongGia();
+        System.out.printf("Tổng tiền tất cả điện thoại: %.0f VND\n", tong);
+    }
+
+    static void giamGiaDienThoaiCu() {
+        System.out.print("Nhập % giảm giá cho điện thoại cũ: ");
+        double phanTram = Double.parseDouble(sc.nextLine());
+        for (DienThoaiCu dt : oldPhones) dt.khuyenMai(phanTram);
+        System.out.println("Đã áp dụng giảm giá cho điện thoại cũ.");
+    }
+
+    static int getChoice(int min, int max, String msg) {
         int choice;
         while (true) {
             try {
-                System.out.print(message);
+                System.out.print(msg);
                 choice = Integer.parseInt(sc.nextLine());
-                if (choice >= min && choice <= max) {
-                    return choice;
-                }
-                System.out.println("Lựa chọn không hợp lệ! Vui lòng nhập từ " + min + " đến " + max + ".");
-            } catch (NumberFormatException e) {
-                System.out.println("Vui lòng nhập số nguyên!");
+                if (choice >= min && choice <= max) return choice;
+            } catch (Exception e) {
+                System.out.println("Vui lòng nhập số hợp lệ!");
             }
         }
     }
-
-
 }
