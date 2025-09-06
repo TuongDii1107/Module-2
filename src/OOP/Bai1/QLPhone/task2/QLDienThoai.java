@@ -1,6 +1,4 @@
-package OOP.Bai1.QLPhone;
-
-import OOP.Bai1.QLPhone.task2.*;
+package OOP.Bai1.QLPhone.task2;
 
 import java.util.ArrayList;
 import java.util.Scanner;
